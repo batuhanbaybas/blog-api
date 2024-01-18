@@ -39,19 +39,25 @@ npm install
 cd blog-api
 ```
 
-4. Start the Docker containers
+4. Create a .env file and add the following environment variables
+
+```bash
+cp .env.example .env
+```
+
+5. Start the Docker containers
 
 ```bash
 docker-compose up -d
 ```
 
-5. Generate and Migrate the database tables
+6. Generate and Migrate the database tables
 
 ```bash
 prisma generate && prisma migrate dev 
 ```
 
-6. Run the project
+7. Run the project
 
 ```bash
 npm start
