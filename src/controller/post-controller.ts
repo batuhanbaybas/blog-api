@@ -3,7 +3,11 @@ import { prisma } from "../config/database";
 
 export const getAllPosts = async (req: Request, res: Response) => {
   try {
-    const posts = await prisma.post.findMany();
+    const posts = await prisma.post.findMany({
+      include: {
+        author: true
+      }
+    });
     return res.status(200).json({
       status: true,
       data: posts
@@ -37,8 +41,8 @@ export const getPostById = async (req: Request, res: Response) => {
 
 export const createPost = async (req: Request, res: Response) => {
   const { title, content } = req.body;
-  const { userID } = req.headers;
   try {
+    const { userID } = req.headers;
     const post = await prisma.post.create({
       data: {
         title: title,

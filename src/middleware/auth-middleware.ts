@@ -9,32 +9,37 @@ export const authMiddleware = async (
 ) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
+    const decoded = await verifyJwt(token as string);
     if (!token) {
       return res.status(403).json({
         status: false,
         message: "Forbidden access"
       });
     }
-
-    const decoded = verifyJwt(token);
-    req.headers.userID = decoded as string;
     const user = await prisma.user.findUnique({
       where: {
-        id: decoded as string
+        id: (
+          decoded as {
+            id: string;
+          }
+        ).id
       }
     });
-
     if (!user) {
-      return res.status(401).json({
+      res.status(401).json({
         status: false,
         message: "Unauthorized"
       });
     }
-  } catch (error) {
-    return res.status(401).json({
+    if (user) {
+      req.headers.userID = user.id;
+      next();
+    }
+  } catch (error: any) {
+    res.status(401).json({
       status: false,
-      message: "Unauthorized"
+      message: error.message
     });
+    next();
   }
-  next();
 };
