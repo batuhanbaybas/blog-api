@@ -27,16 +27,16 @@ Make sure you have the following tools installed before running the project:
 git clone https://github.com/batuhanbaybas/blog-api.git
 ```
 
-2. Install dependencies
-
-```bash
-npm install
-```
-
-3. Go directory
+2. Go directory
 
 ```bash
 cd blog-api
+```
+
+3. Install dependencies
+
+```bash
+npm install
 ```
 
 4. Create a .env file and add the following environment variables
