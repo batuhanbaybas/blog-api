@@ -70,18 +70,3 @@ export const login = async (req: Request, res: Response) => {
     });
   }
 };
-
-export const getAllUser = async (req: Request, res: Response) => {
-  try {
-    const users = await prisma.user.findMany();
-    return res.status(200).json({
-      status: true,
-      data: users
-    });
-  } catch (error: any) {
-    return res.status(400).json({
-      status: false,
-      message: error.message
-    });
-  }
-};
