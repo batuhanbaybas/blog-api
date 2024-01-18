@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 
 import { prisma } from "../config/database";
-import { signJwt } from "../helper/hash";
+import { signJwt, verifyJwt } from "../helper/hash";
+import { JwtPayload } from "jsonwebtoken";
 
 export const register = async (req: Request, res: Response) => {
   try {
