@@ -12,7 +12,7 @@ export const register = async (req: Request, res: Response) => {
   });
   const token = await signJwt(user.id);
 
-  res.status(200).json({
+  return res.status(200).json({
     status: true,
     token: token
   });
@@ -40,7 +40,7 @@ export const login = async (req: Request, res: Response) => {
 
   const token = await signJwt(user?.id);
 
-  res.status(200).json({
+  return res.status(200).json({
     status: true,
     token: token
   });
