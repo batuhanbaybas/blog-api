@@ -1,15 +1,16 @@
 import { Request, Response } from "express";
 
 import { prisma } from "../config/database";
-import { signJwt, verifyJwt } from "../helper/hash";
-import { JwtPayload } from "jsonwebtoken";
+import { bcryptCompare, bcryptHash, signJwt, verifyJwt } from "../helper/hash";
 
 export const register = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
   try {
+    const hashed = await bcryptHash(password);
     const user = await prisma.user.create({
       data: {
-        email: req.body.email,
-        password: req.body.password
+        email: email,
+        password: hashed
       }
     });
     const token = await signJwt(user.id);
@@ -28,23 +29,30 @@ export const register = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
   try {
     const user = await prisma.user.findUnique({
       where: {
-        email: req.body.email
+        email: email
       }
     });
+
+    const isValidPassword = await bcryptCompare(
+      password,
+      user?.password as string
+    );
+
+    if (!isValidPassword) {
+      return res.status(400).json({
+        status: false,
+        message: "Password is incorrect"
+      });
+    }
+
     if (!user) {
       return res.status(400).json({
         status: false,
         message: "User not found"
-      });
-    }
-
-    if (user?.password !== req.body.password) {
-      return res.status(400).json({
-        status: false,
-        message: "Password is incorrect"
       });
     }
 
@@ -54,6 +62,21 @@ export const login = async (req: Request, res: Response) => {
       status: true,
       message: "User logged in successfully",
       token: token
+    });
+  } catch (error: any) {
+    return res.status(400).json({
+      status: false,
+      message: error.message
+    });
+  }
+};
+
+export const getAllUser = async (req: Request, res: Response) => {
+  try {
+    const users = await prisma.user.findMany();
+    return res.status(200).json({
+      status: true,
+      data: users
     });
   } catch (error: any) {
     return res.status(400).json({
