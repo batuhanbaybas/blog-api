@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { prisma } from "../config/database";
-import { signJwt } from "../config/hash";
+import { signJwt } from "../helper/hash";
 
 export const register = async (req: Request, res: Response) => {
   const user = await prisma.user.create({
