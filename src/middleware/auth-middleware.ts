@@ -9,7 +9,7 @@ export const authMiddleware = async (
 ) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
-    const decoded = await verifyJwt(token as string);
+    const decoded = verifyJwt(token as string);
     if (!token) {
       return res.status(403).json({
         status: false,
