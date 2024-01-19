@@ -2,10 +2,18 @@ import { Request, Response } from "express";
 
 import { prisma } from "../config/database";
 import { bcryptCompare, bcryptHash, signJwt, verifyJwt } from "../helper/hash";
+import { validationResult } from "express-validator";
 
 export const register = async (req: Request, res: Response) => {
+  const error = validationResult(req);
   const { email, password } = req.body;
   try {
+    if (!error.isEmpty()) {
+      return res.status(422).json({
+        status: false,
+        message: error.array()
+      });
+    }
     const hashed = await bcryptHash(password);
     const user = await prisma.user.create({
       data: {

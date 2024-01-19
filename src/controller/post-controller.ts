@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/database";
+import { validationResult } from "express-validator";
 
 export const getAllPosts = async (req: Request, res: Response) => {
   try {
@@ -43,8 +44,15 @@ export const getPostById = async (req: Request, res: Response) => {
 };
 
 export const createPost = async (req: Request, res: Response) => {
+  const error = validationResult(req);
   const { title, content } = req.body;
   try {
+    if (!error.isEmpty()) {
+      return res.status(422).json({
+        status: false,
+        message: error.array()
+      });
+    }
     const { userID } = req.headers;
     const post = await prisma.post.create({
       data: {
@@ -68,7 +76,14 @@ export const createPost = async (req: Request, res: Response) => {
 
 export const updatePost = async (req: Request, res: Response) => {
   const { title, content } = req.body;
+  const error = validationResult(req);
   try {
+    if (!error.isEmpty()) {
+      return res.status(422).json({
+        status: false,
+        message: error.array()
+      });
+    }
     const post = await prisma.post.update({
       where: {
         id: req.params.id
