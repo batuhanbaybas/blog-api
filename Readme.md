@@ -42,7 +42,7 @@ npm install
 4. Create a .env file and add the following environment variables
 
 ```bash
-cp .env.example .env
+cp .env.global .env
 ```
 
 5. Start the Docker containers
